@@ -12,11 +12,13 @@ pub struct Fn {
     pub enclosing_environment: Rc<Environment>,
     pub arg_syms: Vec<Symbol>,
 }
+
 impl ToValue for Fn {
     fn to_value(&self) -> Value {
         Value::IFn(Rc::new(self.clone()))
     }
 }
+
 impl IFn for Fn {
     fn invoke(&self, args: Vec<&Value>) -> Value {
         let local_environment = Rc::new(Environment::new_local_environment(Rc::clone(

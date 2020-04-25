@@ -12,11 +12,13 @@ pub enum PersistentList {
     Cons(Rc<Value>, Rc<PersistentList>, i32),
     Empty,
 }
+
 // @TODO definitely don't do this
 #[derive(Debug, Clone, Hash)]
 struct EmptyHash {}
 
 use crate::persistent_list::PersistentList::{Cons, Empty};
+
 pub fn cons_rc(head: Rc<Value>, tail: Rc<PersistentList>) -> PersistentList {
     if let Cons(_, _, old_count) = &*tail {
         Cons(Rc::clone(&head), Rc::clone(&tail), old_count + 1)
@@ -29,6 +31,7 @@ pub fn cons_rc(head: Rc<Value>, tail: Rc<PersistentList>) -> PersistentList {
 pub fn cons(head: Value, tail: PersistentList) -> PersistentList {
     cons_rc(Rc::new(head), Rc::new(tail))
 }
+
 impl PersistentList {
     pub fn len(&self) -> i32 {
         match self {
@@ -54,6 +57,7 @@ pub trait ToPersistentList {
         self.into_list().to_value()
     }
 }
+
 impl ToPersistentList for Vec<&Value> {
     fn into_list(self) -> PersistentList {
         self.into_iter()
@@ -61,11 +65,13 @@ impl ToPersistentList for Vec<&Value> {
             .collect::<PersistentList>()
     }
 }
+
 impl ToPersistentList for Vec<Rc<Value>> {
     fn into_list(self) -> PersistentList {
         self.into_iter().collect::<PersistentList>()
     }
 }
+
 impl fmt::Display for PersistentList {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let str = match self {
@@ -86,11 +92,13 @@ impl fmt::Display for PersistentList {
         write!(f, "{}", str)
     }
 }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  Iterating through Persistent List
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 pub trait ToPersistentListIter {
     fn iter(&self) -> PersistentListIter;
     fn nth(&self, ind: usize) -> Rc<Value> {

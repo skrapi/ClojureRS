@@ -16,6 +16,7 @@ pub struct EnvironmentVal {
     curr_ns: Namespace,
     namespaces: Namespaces,
 }
+
 impl EnvironmentVal {
     /// Default main environment
     fn new_main_val() -> EnvironmentVal {
@@ -25,12 +26,14 @@ impl EnvironmentVal {
         }
     }
 }
+
 /// Our environment keeps track of the meaning of things 'right here', relative to where
 /// something is at (meaning, a form inside of a let might have a different meaning for
 /// the symbol x than a form outside of it, with a let introducing an additional local environment
 ///
 /// Stores our namespaces and our current namespace, which themselves personally store our symbols
 /// mapped to values
+
 #[derive(Debug, Clone)]
 pub enum Environment {
     MainEnvironment(EnvironmentVal),
@@ -38,14 +41,18 @@ pub enum Environment {
     /// Introduced by Closures, and by let
     LocalEnvironment(Rc<Environment>, RefCell<HashMap<Symbol, Rc<Value>>>),
 }
+
 use Environment::*;
+
 impl Environment {
     pub fn new_main_environment() -> Environment {
         MainEnvironment(EnvironmentVal::new_main_val())
     }
+
     pub fn new_local_environment(outer_environment: Rc<Environment>) -> Environment {
         LocalEnvironment(outer_environment, RefCell::new(HashMap::new()))
     }
+    
     pub fn insert(&self, sym: Symbol, val: Rc<Value>) {
         match self {
             MainEnvironment(EnvironmentVal { curr_ns, .. }) => {
@@ -56,6 +63,7 @@ impl Environment {
             }
         }
     }
+    
     pub fn get(&self, sym: &Symbol) -> Rc<Value> {
         match self {
             MainEnvironment(EnvironmentVal { curr_ns, .. }) => curr_ns.get(sym),
@@ -66,6 +74,7 @@ impl Environment {
             },
         }
     }
+    
     pub fn clojure_core_environment() -> Rc<Environment> {
         // Register our macros / functions ahead of time
         let add_fn = rust_core::AddFn {};

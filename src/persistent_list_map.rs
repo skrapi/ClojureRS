@@ -28,13 +28,16 @@ pub enum PersistentListMap {
     Map(Rc<PersistentListMap>, MapEntry),
     Empty,
 }
+
 // Again, only using strange IBlah convention to reflect the Clojure base
 // @TODO really though .. just rethink this
 /// A PersistentListMap.
+
 pub trait IPersistentListMap {
     fn get(&self, key: &Rc<Value>) -> Rc<Value>;
     fn assoc(&self, key: Rc<Value>, value: Rc<Value>) -> Self;
 }
+
 impl IPersistentListMap for PersistentListMap {
     // @TODO make fn of ILookup
     fn get(&self, key: &Rc<Value>) -> Rc<Value> {
@@ -76,9 +79,11 @@ impl IPersistentListMap for Rc<PersistentListMap> {
 
 // The purpose of these functions are no longer to implement conversion,
 // but to give us a cleaner way to invoke it
+
 pub trait ToPersistentListMap {
     fn into_list_map(self) -> PersistentListMap;
 }
+
 impl<T> ToPersistentListMap for T
 where
     T: Into<PersistentListMap>,
@@ -87,22 +92,27 @@ where
         Into::<PersistentListMap>::into(self)
     }
 }
+
 impl From<Vec<MapEntry>> for PersistentListMap {
     fn from(item: Vec<MapEntry>) -> Self {
         item.into_iter().collect::<PersistentListMap>()
     }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Iterating
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 pub struct PersistentListMapIter {
     node: Rc<PersistentListMap>,
     seen: HashMap<Rc<Value>, bool>,
 }
+
 pub trait ToPersistentListMapIter {
     fn iter(&self) -> PersistentListMapIter;
 }
+
 impl Iterator for PersistentListMapIter {
     type Item = MapEntry;
     fn next(&mut self) -> Option<Self::Item> {
@@ -128,6 +138,7 @@ impl ToPersistentListMapIter for Rc<PersistentListMap> {
         }
     }
 }
+
 impl ToPersistentListMapIter for PersistentListMap {
     fn iter(&self) -> PersistentListMapIter {
         Rc::new(self.clone()).iter()
@@ -144,6 +155,7 @@ impl FromIterator<MapEntry> for PersistentListMap {
         map_so_far
     }
 }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // End Iteration
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +181,7 @@ impl fmt::Display for PersistentListMap {
         write!(f, "{}", as_str)
     }
 }
+
 #[cfg(test)]
 mod tests {
     use crate::persistent_list_map::*;

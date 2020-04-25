@@ -11,6 +11,7 @@ pub struct Namespace {
     pub name: Symbol,
     mappings: RefCell<HashMap<Symbol, Rc<Value>>>,
 }
+
 impl Namespace {
     pub fn new(name: Symbol, mappings: RefCell<HashMap<Symbol, Rc<Value>>>) -> Namespace {
         Namespace { name, mappings }
@@ -25,5 +26,6 @@ impl Namespace {
         }
     }
 }
+
 #[derive(Debug, Clone)]
 pub struct Namespaces(pub RefCell<HashMap<Symbol, Namespace>>);

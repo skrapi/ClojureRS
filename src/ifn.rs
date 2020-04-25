@@ -39,4 +39,5 @@ use std::hash::Hash;
 pub trait IFn: Debug + DynClone {
     fn invoke(&self, args: Vec<&Value>) -> Value;
 }
+
 dyn_clone::clone_trait_object!(IFn);
